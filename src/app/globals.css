@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* Stitch design system — artisanal_cocoa / home_page_chocolandia */
+:root {
+  --background: #fff8ef;
+  --foreground: #1e1b13;
+  --foreground-muted: #504442;
+  --muted: #f5edde;
+  --muted-low: #fbf3e4;
+  --card: #ffffff;
+  --primary-cocoa: #271310;
+  --primary-container: #3e2723;
+  --on-primary-container: #ae8d87;
+  --accent: #735c00;
+  --accent-highlight: #ffe088;
+  --accent-soft: #fed65b;
+  --secondary-container: #fed65b;
+  --on-secondary-container: #745c00;
+  --border: #d3c3c0;
+  --outline-variant: #d3c3c0;
+  --footer-dim: #e1d9cb;
+  --surface-container: #f5edde;
+  --surface-container-high: #efe7d9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-muted: var(--muted);
+  --color-muted-low: var(--muted-low);
+  --color-card: var(--card);
+  --color-primary-cocoa: var(--primary-cocoa);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-accent: var(--accent);
+  --color-accent-highlight: var(--accent-highlight);
+  --color-accent-soft: var(--accent-soft);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-border: var(--border);
+  --color-outline-variant: var(--outline-variant);
+  --color-footer-dim: var(--footer-dim);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-noto-serif);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

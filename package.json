@@ -14,6 +14,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:webpack": "next build --webpack",
+    "build:webpack:shared": "node ./scripts/build-webpack-shared.mjs",
     "start": "next start",
     "lint": "eslint"
   },

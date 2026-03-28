@@ -3,4 +3,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/repositories/chocolandia-by
     - cd $DEPLOYPATH && npm install
-    - cd $DEPLOYPATH && npm run build:webpack
+    - cd $DEPLOYPATH && npm run build:webpack:shared

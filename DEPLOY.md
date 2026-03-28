@@ -24,6 +24,16 @@ npm run start
 
 Локально по умолчанию остаётся `npm run build` (часто быстрее). На «капризных» VPS/шаред-хостингах надёжнее **`build:webpack`**.
 
+### Rayon / «Resource temporarily unavailable» на шаред-хостинге
+
+Если сборка падает с паникой Rust / **rayon** (`ThreadPoolBuildError`, `WouldBlock`, `SIGABRT`), на хостинге обычно жёсткий лимит на потоки. Соберите с **одним потоком Rayon**:
+
+```bash
+RAYON_NUM_THREADS=1 npm run build:webpack
+```
+
+В репозитории есть скрипт **`npm run build:webpack:shared`** (ставит `RAYON_NUM_THREADS=1` и вызывает `next build --webpack`; работает и на Windows, и на сервере). В **`.cpanel.yml`** для Git Deploy перед сборкой задано **`RAYON_NUM_THREADS=1`**.
+
 ## PostCSS
 
 Конфиг в **`package.json` → поле `postcss`** (Next читает его раньше файлов `postcss.config.*`). Так не появляется обёртка с `__esModule`, из‑за которой webpack‑сборка могла падать с «must export a `plugins` key».
@@ -33,12 +43,12 @@ npm run start
 1. `node -v` → не ниже 20.9  
 2. Удалить старые модули: `rm -rf node_modules`  
 3. `npm ci`  
-4. `npm run build:webpack`  
+4. **`npm run build:webpack:shared`** (рекомендуется на шаред-хостинге) или `RAYON_NUM_THREADS=1 npm run build:webpack`  
 5. `npm run start` (или настройте PM2/systemd на `next start`)
 
 ## cPanel (Git → Deploy)
 
-В корне репозитория лежит **`.cpanel.yml`**: при деплое выполняются `npm install` и `npm run build:webpack` в каталоге репозитория.
+В корне репозитория лежит **`.cpanel.yml`**: при деплое выполняются `npm install` и **`npm run build:webpack:shared`** в каталоге репозитория.
 
 1. **Закоммитьте и запушьте** в `main`: `.cpanel.yml`, `package.json`, **`package-lock.json`**, весь код.  
 2. Если путь к репозиторию **не** `$HOME/repositories/chocolandia-by` (у вас было `/hosting2/chocolan/repositories/chocolandia-by`), откройте `.cpanel.yml` и замените `DEPLOYPATH` на **абсолютный путь** к папке клона на сервере, например:  
@@ -50,4 +60,4 @@ npm run start
 
 ## EN (short)
 
-Deploy the **same** repo state as development (Next 16, Tailwind 4). Use **Node ≥ 20.9**. If production build crashes with Turbopack, run **`npm run build:webpack`** then **`npm run start`**.
+Deploy the **same** repo state as development (Next 16, Tailwind 4). Use **Node ≥ 20.9**. If production build crashes with Turbopack, run **`npm run build:webpack`** then **`npm run start`**. On tight shared hosting, if the Rust/rayon thread pool panics, use **`RAYON_NUM_THREADS=1`** (see **`npm run build:webpack:shared`**).

@@ -9,7 +9,8 @@
 
 - **Node.js ≥ 20.9** (см. `package.json` → `engines`, файл `.nvmrc`).
 - Установка зависимостей из **lock-файла**: `npm ci` (предпочтительно) или `npm install`.  
-  Файл **`package-lock.json` должен быть в Git** — иначе `npm ci` на сервере не сработает.
+  Файл **`package-lock.json` должен быть в Git** — иначе `npm ci` на сервере не сработает.  
+  Если в shell на сервере выставлен **`NODE_ENV=production`**, `npm ci` / `npm install` могут **не ставить devDependencies** — тогда: `NODE_ENV=development npm ci`. В текущем `package.json` Tailwind, PostCSS‑плагин и TypeScript лежат в **dependencies**, чтобы сборка на cPanel не зависела от этого.
 
 ## Сборка на хостинге
 
@@ -25,7 +26,7 @@ npm run start
 
 ## PostCSS
 
-Используется **`postcss.config.cjs`** (CommonJS) с плагином `@tailwindcss/postcss` — так Next/webpack на cPanel не получает лишнее поле `__esModule`, из‑за которого падала сборка.
+Конфиг в **`package.json` → поле `postcss`** (Next читает его раньше файлов `postcss.config.*`). Так не появляется обёртка с `__esModule`, из‑за которой webpack‑сборка могла падать с «must export a `plugins` key».
 
 ## Чеклист после `git pull` на сервере
 

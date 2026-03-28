@@ -8,7 +8,8 @@
 ## Требования
 
 - **Node.js ≥ 20.9** (см. `package.json` → `engines`, файл `.nvmrc`).
-- Установка зависимостей из **lock-файла**: `npm ci` (предпочтительно) или `npm install`.
+- Установка зависимостей из **lock-файла**: `npm ci` (предпочтительно) или `npm install`.  
+  Файл **`package-lock.json` должен быть в Git** — иначе `npm ci` на сервере не сработает.
 
 ## Сборка на хостинге
 
@@ -24,8 +25,7 @@ npm run start
 
 ## PostCSS
 
-Используется только `postcss.config.mjs` с плагином `@tailwindcss/postcss`.  
-Не добавляйте в конфиг поля вроде `__esModule` — Next на это ругается.
+Используется **`postcss.config.cjs`** (CommonJS) с плагином `@tailwindcss/postcss` — так Next/webpack на cPanel не получает лишнее поле `__esModule`, из‑за которого падала сборка.
 
 ## Чеклист после `git pull` на сервере
 

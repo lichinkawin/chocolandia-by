@@ -24,15 +24,20 @@ npm run start
 
 Локально по умолчанию остаётся `npm run build` (часто быстрее). На «капризных» VPS/шаред-хостингах надёжнее **`build:webpack`**.
 
-### Rayon / «Resource temporarily unavailable» на шаред-хостинге
+### Потоки / «Resource temporarily unavailable» на шаред-хостинге
 
-Если сборка падает с паникой Rust / **rayon** (`ThreadPoolBuildError`, `WouldBlock`, `SIGABRT`), на хостинге обычно жёсткий лимит на потоки. Соберите с **одним потоком Rayon**:
+На хостинге часто режут **число потоков и процессов** (`ulimit`, cgroups). Тогда возможны:
+
+- паника Rust / **rayon** (`ThreadPoolBuildError`, `WouldBlock`);
+- **`pthread_create: Resource temporarily unavailable`** при фазе **Collecting page data using N workers** — Next по умолчанию поднимает много **дочерних процессов** (по числу CPU), каждый Node тянет свой пул потоков.
+
+Используйте **`npm run build:webpack:shared`**: скрипт выставляет `NEXT_BUILD_LOW_CPU=1` (в **`next.config.ts`** включаются `experimental.cpus: 1` и `staticGenerationMaxConcurrency: 1`), плюс `RAYON_NUM_THREADS=1` и при необходимости `UV_THREADPOOL_SIZE=2`. В **`.cpanel.yml`** для Git Deploy уже вызывается этот скрипт.
+
+Вручную на сервере без скрипта (эквивалент по смыслу):
 
 ```bash
-RAYON_NUM_THREADS=1 npm run build:webpack
+NEXT_BUILD_LOW_CPU=1 RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=2 npm run build:webpack
 ```
-
-В репозитории есть скрипт **`npm run build:webpack:shared`** (ставит `RAYON_NUM_THREADS=1` и вызывает `next build --webpack`; работает и на Windows, и на сервере). В **`.cpanel.yml`** для Git Deploy перед сборкой задано **`RAYON_NUM_THREADS=1`**.
 
 ## PostCSS
 
@@ -60,4 +65,4 @@ RAYON_NUM_THREADS=1 npm run build:webpack
 
 ## EN (short)
 
-Deploy the **same** repo state as development (Next 16, Tailwind 4). Use **Node ≥ 20.9**. If production build crashes with Turbopack, run **`npm run build:webpack`** then **`npm run start`**. On tight shared hosting, if the Rust/rayon thread pool panics, use **`RAYON_NUM_THREADS=1`** (see **`npm run build:webpack:shared`**).
+Deploy the **same** repo state as development (Next 16, Tailwind 4). Use **Node ≥ 20.9**. If production build crashes with Turbopack, run **`npm run build:webpack`** then **`npm run start`**. On tight shared hosting (rayon panic or **`pthread_create` / `uv_thread_create` EAGAIN** during “Collecting page data”), use **`npm run build:webpack:shared`** — it sets **`NEXT_BUILD_LOW_CPU=1`** (Next **`experimental.cpus: 1`**) plus Rayon/libuv limits.

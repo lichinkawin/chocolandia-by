@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Контакты — Chocolandia.by</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/main.css" />
+    <script>
+      window.__CHOCOLANDIA_CONFIG__ = { formspreeUrl: "https://formspree.io/f/REPLACE_ME" };
+    </script>
+  </head>
+  <body class="min-h-full flex flex-col bg-background text-foreground">
+    <div id="site-nav"></div>
+    <main class="mx-auto flex w-full flex-1 max-w-screen-2xl flex-col gap-10 bg-background px-4 pb-16 pt-[88px] sm:px-6 sm:pb-20 sm:pt-[96px] lg:px-12">
+      <section class="space-y-3">
+        <p class="text-xs font-medium uppercase tracking-[0.2em] text-foreground/50">Контакты</p>
+        <h1 class="font-serif text-4xl text-primary-cocoa sm:text-5xl">Свяжитесь с нами</h1>
+        <p class="max-w-2xl text-sm leading-relaxed text-foreground-muted sm:text-base">
+          Ниже базовая информация для связи. Позже можно заменить на актуальные данные компании.
+        </p>
+      </section>
+      <section class="grid gap-6 lg:grid-cols-3">
+        <article class="space-y-3 rounded-2xl border border-border/80 bg-card p-5">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground-muted/80">Телефон</h2>
+          <p class="text-lg font-medium text-primary-cocoa">+375 (29) 000-00-00</p>
+          <p class="text-sm text-foreground-muted">Пн-Вс: 10:00 - 20:00</p>
+        </article>
+        <article class="space-y-3 rounded-2xl border border-border/80 bg-card p-5">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground-muted/80">Email</h2>
+          <p class="text-lg font-medium text-primary-cocoa">hello@chocolandia.by</p>
+          <p class="text-sm text-foreground-muted">Ответим в течение рабочего дня.</p>
+        </article>
+        <article class="space-y-3 rounded-2xl border border-border/80 bg-card p-5">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground-muted/80">Адрес</h2>
+          <p class="text-lg font-medium text-primary-cocoa">г. Минск, ул. Примерная, 10</p>
+          <p class="text-sm text-foreground-muted">Самовывоз и доставка по Минску.</p>
+        </article>
+      </section>
+      <section class="rounded-2xl border border-border/80 bg-card p-5 sm:p-6">
+        <h2 class="font-serif text-2xl text-primary-cocoa">Социальные сети</h2>
+        <p class="mt-2 text-sm text-foreground-muted">Следите за новинками и сезонными коллекциями.</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href="https://www.instagram.com/chocolandia.by/" target="_blank" rel="noreferrer noopener" class="inline-flex items-center rounded-full border border-border/80 bg-card px-5 py-2.5 text-sm font-medium text-primary-cocoa transition hover:border-accent/50">Instagram @chocolandia.by</a>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+    <script type="module">
+      import { initLayout } from "./assets/js/layout.js";
+      initLayout();
+    </script>
+  </body>
+</html>

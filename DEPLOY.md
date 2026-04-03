@@ -1,68 +1,40 @@
-# Деплой Chocolandia.by
+# Деплой Chocolandia.by (статический сайт)
 
-## Важно
+Сайт — папка **`site/`**: чистый **HTML + CSS + JS**, без Node.js на хостинге.
 
-На сервере должен быть **тот же репозиторий**, что и локально: **Next 16**, **React 19**, **Tailwind v4**.  
-Старый `package.json` с Next 15 + Tailwind 3 **нельзя** смешивать с текущим кодом — замените файлы целиком (`git pull` / заново склонируйте проект).
+## Перед загрузкой на хостинг
 
-## Требования
+1. Установить зависимости (локально, один раз): `npm install`
+2. Собрать стили: **`npm run build:css`** → создаётся `site/assets/main.css`
+3. В **`site/index.html`** (и при необходимости в `catalog.html`, `cart.html`, …) замените в скрипте **`formspreeUrl`** на ваш URL Formspree: `https://formspree.io/f/xxxx`
+4. Картинки товаров положите в **`site/NEW/`** (как в прежнем проекте путь `NEW/...`)
 
-- **Node.js ≥ 20.9** (см. `package.json` → `engines`, файл `.nvmrc`).
-- Установка зависимостей из **lock-файла**: `npm ci` (предпочтительно) или `npm install`.  
-  Файл **`package-lock.json` должен быть в Git** — иначе `npm ci` на сервере не сработает.  
-  Если в shell на сервере выставлен **`NODE_ENV=production`**, `npm ci` / `npm install` могут **не ставить devDependencies** — тогда: `NODE_ENV=development npm ci`. В текущем `package.json` Tailwind, PostCSS‑плагин и TypeScript лежат в **dependencies**, чтобы сборка на cPanel не зависела от этого.
+## Данные из Google Sheets
 
-## Сборка на хостинге
+По умолчанию каталог и настройки главной подгружаются **в браузере** с опубликованных CSV (как в старом `google-sheets.ts`).
 
-Если `npm run build` падает с **Turbopack** / `next-panic-*.log`, используйте сборку через **webpack**:
+Если хостинг/браузер блокирует CORS к Google:
 
-```bash
-npm ci
-npm run build:webpack
-npm run start
-```
+1. Локально: **`npm run fetch:data`** — скачивает CSV в **`site/data/products.csv`**
+2. В `window.__CHOCOLANDIA_CONFIG__` добавьте: **`productsBundledUrl: "data/products.csv"`**
 
-Локально по умолчанию остаётся `npm run build` (часто быстрее). На «капризных» VPS/шаред-хостингах надёжнее **`build:webpack`**.
+Опционально задайте свои URL листов: `productsCsvUrl`, `homeSettingsCsvUrl`, `homeCategoriesCsvUrl` (см. `site/assets/js/config.js`).
 
-### Потоки / «Resource temporarily unavailable» на шаред-хостинге
+## Загрузка на хостинг
 
-На хостинге часто режут **число потоков и процессов** (`ulimit`, cgroups). Тогда возможны:
+Залейте **содержимое `site/`** в корень сайта (например `public_html/`). Убедитесь, что открывается **`index.html`** по умолчанию.
 
-- паника Rust / **rayon** (`ThreadPoolBuildError`, `WouldBlock`);
-- **`pthread_create: Resource temporarily unavailable`** при фазе **Collecting page data using N workers** — Next по умолчанию поднимает много **дочерних процессов** (по числу CPU), каждый Node тянет свой пул потоков.
+В корне лежит **`.htaccess`** с короткими URL (`/catalog`, `/cart`, `/product/slug`) для **Apache**. Если у вас nginx или другой сервер — настройте эквивалент вручную.
 
-Используйте **`npm run build:webpack:shared`**: скрипт выставляет `NEXT_BUILD_LOW_CPU=1` (в **`next.config.ts`** включаются `experimental.cpus: 1` и `staticGenerationMaxConcurrency: 1`), плюс `RAYON_NUM_THREADS=1` и при необходимости `UV_THREADPOOL_SIZE=2`. В **`.cpanel.yml`** для Git Deploy уже вызывается этот скрипт.
+## Чеклист
 
-Вручную на сервере без скрипта (эквивалент по смыслу):
-
-```bash
-NEXT_BUILD_LOW_CPU=1 RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=2 npm run build:webpack
-```
-
-## PostCSS
-
-Конфиг в **`package.json` → поле `postcss`** (Next читает его раньше файлов `postcss.config.*`). Так не появляется обёртка с `__esModule`, из‑за которой webpack‑сборка могла падать с «must export a `plugins` key».
-
-## Чеклист после `git pull` на сервере
-
-1. `node -v` → не ниже 20.9  
-2. Удалить старые модули: `rm -rf node_modules`  
-3. `npm ci`  
-4. **`npm run build:webpack:shared`** (рекомендуется на шаред-хостинге) или `RAYON_NUM_THREADS=1 npm run build:webpack`  
-5. `npm run start` (или настройте PM2/systemd на `next start`)
-
-## cPanel (Git → Deploy)
-
-В корне репозитория лежит **`.cpanel.yml`**: при деплое выполняются `npm install` и **`npm run build:webpack:shared`** в каталоге репозитория.
-
-1. **Закоммитьте и запушьте** в `main`: `.cpanel.yml`, `package.json`, **`package-lock.json`**, весь код.  
-2. Если путь к репозиторию **не** `$HOME/repositories/chocolandia-by` (у вас было `/hosting2/chocolan/repositories/chocolandia-by`), откройте `.cpanel.yml` и замените `DEPLOYPATH` на **абсолютный путь** к папке клона на сервере, например:  
-   `export DEPLOYPATH=/hosting2/chocolan/repositories/chocolandia-by`  
-3. В cPanel: **Setup Node.js Application** — корень приложения = тот же каталог, что `DEPLOYPATH`, команда запуска **`npm run start`**, версия Node **20+**.  
-4. Условие панели «нет непереданных изменений»: сделайте **`git push`** с ПК, затем в cPanel обновите/задеплойте ветку `main`.
+- [ ] `npm run build:css`
+- [ ] Formspree URL в HTML
+- [ ] Папка `NEW/` с изображениями
+- [ ] При CORS-проблемах: `fetch:data` + `productsBundledUrl`
 
 ---
 
 ## EN (short)
 
-Deploy the **same** repo state as development (Next 16, Tailwind 4). Use **Node ≥ 20.9**. If production build crashes with Turbopack, run **`npm run build:webpack`** then **`npm run start`**. On tight shared hosting (rayon panic or **`pthread_create` / `uv_thread_create` EAGAIN** during “Collecting page data”), use **`npm run build:webpack:shared`** — it sets **`NEXT_BUILD_LOW_CPU=1`** (Next **`experimental.cpus: 1`**) plus Rayon/libuv limits.
+Static site lives in **`site/`**. Run **`npm run build:css`** before deploy. Set **Formspree** URL in the inline **`__CHOCOLANDIA_CONFIG__`** script. Upload **`site/`** contents to the web root. Use **`.htaccess`** on Apache for clean URLs; optional **`npm run fetch:data`** + **`productsBundledUrl`** if Google CSV is CORS-blocked.

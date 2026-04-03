@@ -2,37 +2,13 @@
   "name": "chocolandia-by",
   "version": "0.1.0",
   "private": true,
-  "postcss": {
-    "plugins": {
-      "@tailwindcss/postcss": {}
-    }
-  },
-  "engines": {
-    "node": ">=20.9.0"
-  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "build:webpack": "next build --webpack",
-    "build:webpack:shared": "node ./scripts/build-webpack-shared.mjs",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "lucide-react": "^1.0.1",
-    "next": "16.2.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "zustand": "^5.0.12"
+    "build:css": "tailwindcss -i ./src-static/input.css -o ./site/assets/main.css -m",
+    "fetch:data": "node scripts/fetch-sheet-data.mjs",
+    "build:site": "npm run build:css"
   },
   "devDependencies": {
-    "eslint": "^9",
-    "eslint-config-next": "16.2.1"
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
   }
 }

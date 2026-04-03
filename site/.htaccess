@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^catalog/?$ catalog.html [L]
+  RewriteRule ^cart/?$ cart.html [L]
+  RewriteRule ^contacts/?$ contacts.html [L]
+  RewriteRule ^faq/?$ faq.html [L]
+  RewriteRule ^product/([^/]+)/?$ product.html?slug=$1 [L,QSA]
+</IfModule>

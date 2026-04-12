@@ -29,7 +29,7 @@ export function initLayout() {
   <div class="mx-auto flex h-[72px] w-full max-w-screen-2xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-12">
     <div class="flex min-w-0 flex-1 items-center gap-3 md:flex-none md:gap-8">
       <button type="button" id="nav-open-mobile" class="rounded-lg p-2 transition hover:bg-muted-low md:hidden" aria-label="Открыть меню">${icons.iconMenu("h-5 w-5 text-primary-cocoa")}</button>
-      <a href="index.html" class="shrink-0 font-serif text-lg italic tracking-tight text-primary-cocoa sm:text-2xl md:text-[1.65rem]">CHOCOLANDIA.BY</a>
+      <a href="/" class="shrink-0 font-serif text-lg italic tracking-tight text-primary-cocoa sm:text-2xl md:text-[1.65rem]">CHOCOLANDIA.BY</a>
       <nav class="hidden items-center gap-8 lg:flex">
         <div class="relative" id="nav-catalog-wrap">
           <a href="catalog.html" id="nav-catalog-link" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent" aria-expanded="false" aria-haspopup="menu">Каталог</a>
@@ -42,7 +42,7 @@ export function initLayout() {
           </div>
         </div>
         <a href="faq.html#reviews" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent">Отзывы</a>
-        <a href="index.html#about" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent">О нас</a>
+        <a href="/#about" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent">О нас</a>
         <a href="contacts.html" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent">Контакты</a>
       </nav>
     </div>
@@ -74,7 +74,7 @@ ${hideMobileCartFab ? "" : `<a href="cart.html" class="group fixed bottom-6 righ
         <a href="catalog.html#col=${encodeURIComponent("Клубника")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Клубника</a>
       </div>
       <a href="faq.html#reviews" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Отзывы</a>
-      <a href="index.html#about" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">О нас</a>
+        <a href="/#about" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">О нас</a>
       <a href="contacts.html" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Контакты</a>
       <a href="https://www.instagram.com/chocolandia.by/" target="_blank" rel="noreferrer noopener" class="nav-mobile-link rounded-lg px-3 py-2.5 text-foreground/90 transition hover:bg-muted-low">Instagram</a>
       <a href="cart.html" class="nav-mobile-link mt-4 rounded-lg border border-outline-variant/40 px-3 py-3 text-center font-medium text-primary-cocoa transition hover:bg-muted-low">Корзина</a>
@@ -93,7 +93,7 @@ ${hideMobileCartFab ? "" : `<a href="cart.html" class="group fixed bottom-6 righ
       <h4 class="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-cocoa">Навигация</h4>
       <ul class="space-y-3">
         <li><a href="catalog.html" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Каталог</a></li>
-        <li><a href="index.html#about" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">О нас</a></li>
+        <li><a href="/#about" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">О нас</a></li>
         <li><a href="faq.html#reviews" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Отзывы</a></li>
       </ul>
     </section>
@@ -101,7 +101,7 @@ ${hideMobileCartFab ? "" : `<a href="cart.html" class="group fixed bottom-6 righ
       <h4 class="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-cocoa">Поддержка</h4>
       <ul class="space-y-3">
         <li><a href="#" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Способы оплаты и доставки</a></li>
-        <li><a href="index.html#contacts" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Контакты</a></li>
+        <li><a href="/#contacts" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Контакты</a></li>
         <li><a href="#" class="text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Публичный договор (Оферта)</a></li>
       </ul>
       <a href="#" class="mt-4 inline-block text-sm uppercase tracking-wide text-primary-container/75 transition hover:text-accent">Образец чека</a>

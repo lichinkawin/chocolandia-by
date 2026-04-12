@@ -1,6 +1,7 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  RewriteRule ^index\.html$ / [R=301,L]
   RewriteRule ^collections/([^/]+)/?$ catalog.html [L,QSA]
   RewriteRule ^catalog/?$ catalog.html [L]
   RewriteRule ^cart/?$ cart.html [L]

@@ -36,7 +36,7 @@ export function initCheckoutForm(form, hooks) {
     if (!formspreeUrl || formspreeUrl.includes("REPLACE_ME")) {
       hooks.onStatus(
         "error",
-        "Укажите formspreeUrl в window.__CHOCOLANDIA_CONFIG__ на странице (или в index.html).",
+        "Укажите formspreeUrl в window.__CHOCOLANDIA_CONFIG__ на странице оформления заказа.",
       );
       return;
     }

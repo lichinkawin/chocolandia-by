@@ -20,10 +20,40 @@ function getQueryParam(name) {
   return u.searchParams.get(name) || "";
 }
 
+/**
+ * Кандидаты slug из path/hash/query (важно для `?category=` на проде при кэше старого collections-path).
+ * @returns {string[]}
+ */
+function getCandidateCollectionSlugs() {
+  const fromPath = getCollectionSlugFromUrl();
+  const qCat = getQueryParam("category");
+  const qSlug = getQueryParam("slug");
+  const qCol = getQueryParam("collection");
+  /** @type {string[]} */
+  const out = [];
+  const seen = new Set();
+  for (const x of [fromPath, qCat, qSlug, qCol]) {
+    const t = (x || "").trim();
+    if (!t || seen.has(t)) continue;
+    seen.add(t);
+    out.push(t);
+  }
+  return out;
+}
+
+/**
+ * @returns {string | null} filter_key коллекции или null
+ */
+function getResolvedCollectionFilterKey(homeCategories) {
+  for (const cand of getCandidateCollectionSlugs()) {
+    const k = resolveCollectionFilterKey(cand, homeCategories);
+    if (k && k.toLowerCase() !== "все") return k;
+  }
+  return null;
+}
+
 function isCollectionDetailView(homeCategories) {
-  const s = getCollectionSlugFromUrl();
-  const k = s ? resolveCollectionFilterKey(s, homeCategories) : null;
-  return Boolean(k && k.toLowerCase() !== "все");
+  return getResolvedCollectionFilterKey(homeCategories) !== null;
 }
 
 async function main() {
@@ -60,17 +90,15 @@ async function main() {
     }
   }
 
-  const rawSlug = getCollectionSlugFromUrl();
-  const resolvedKey = rawSlug
-    ? resolveCollectionFilterKey(rawSlug, homeCategories)
-    : null;
+  const resolvedKey = getResolvedCollectionFilterKey(homeCategories);
+  const hadCategoryIntent = getCandidateCollectionSlugs().length > 0;
 
   const shopRoot = document.getElementById("catalog-shop-root");
   const gridRoot = document.getElementById("catalog-grid-root");
   const topLink = document.getElementById("catalog-top-link");
   const gridIntro = document.getElementById("catalog-grid-intro");
 
-  if (rawSlug && !resolvedKey) {
+  if (hadCategoryIntent && !resolvedKey) {
     if (shopRoot) {
       shopRoot.innerHTML = `
       <div class="mx-auto max-w-lg rounded-xl border border-outline-variant/30 bg-muted-low/50 px-6 py-10 text-center">
@@ -85,10 +113,8 @@ async function main() {
     return;
   }
 
-  let activeFilter = "Все";
-  if (resolvedKey) {
-    activeFilter = resolvedKey;
-  } else if (qCat && validKeys.has(qCat)) {
+  let activeFilter = resolvedKey || "Все";
+  if (!resolvedKey && qCat && validKeys.has(qCat)) {
     activeFilter = qCat;
   }
 
@@ -122,10 +148,7 @@ async function main() {
     if (detail) {
       topLink?.classList.add("hidden");
       gridIntro?.classList.add("hidden");
-      const slug = getCollectionSlugFromUrl();
-      const fk = slug
-        ? resolveCollectionFilterKey(slug, homeCategories)
-        : null;
+      const fk = getResolvedCollectionFilterKey(homeCategories);
       if (fk) {
         activeFilter = fk;
         renderCategoryPageHeader(fk);
@@ -177,13 +200,8 @@ async function main() {
   };
 
   const syncFromUrl = () => {
-    const s = getCollectionSlugFromUrl();
-    const k = s ? resolveCollectionFilterKey(s, homeCategories) : null;
-    if (k && k.toLowerCase() !== "все") {
-      activeFilter = k;
-    } else if (!s) {
-      activeFilter = "Все";
-    }
+    const fk = getResolvedCollectionFilterKey(homeCategories);
+    activeFilter = fk || "Все";
     rerenderShop();
     rerenderGrid();
   };

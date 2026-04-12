@@ -5,6 +5,14 @@ const DEFAULT_PUB_BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVtil-VxkkbMZK7nXEShlrD9trRJ1VvM2nmQg7KnIN17Y_J9GHt2ZzbEc40i8R8U94duRG9IM7Gj1Q/pub";
 const DEFAULT_PRODUCTS_CSV_URL = `${DEFAULT_PUB_BASE}?output=csv`;
 
+/** @param {string} gid Sheet tab id (published «File → Share → Publish to web»). */
+function buildPubCsvUrlByGid(gid) {
+  return `${DEFAULT_PUB_BASE}?gid=${encodeURIComponent(gid)}&single=true&output=csv`;
+}
+
+/** Published Google Sheet tab «HomePage_Categories». */
+const DEFAULT_HOME_CATEGORIES_CSV_URL = buildPubCsvUrlByGid("1122326532");
+
 export const DEFAULT_HOME_SETTINGS = {
   hero_heading: "Искусство бельгийского шоколада",
   hero_subheading: "Ручная работа. Создаем моменты счастья в Минске.",
@@ -72,6 +80,11 @@ function toNumber(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+/** @param {string} h */
+function normalizeCsvHeader(h) {
+  return h.replace(/^\uFEFF/g, "").toLowerCase().trim();
+}
+
 /** @param {string} csvText */
 function parseCsvToRecords(csvText) {
   const lines = csvText
@@ -79,7 +92,7 @@ function parseCsvToRecords(csvText) {
     .map((line) => line.trim())
     .filter(Boolean);
   if (lines.length <= 1) return [];
-  const headers = parseCsvLine(lines[0]).map((h) => h.toLowerCase());
+  const headers = parseCsvLine(lines[0]).map((h) => normalizeCsvHeader(h));
   return lines.slice(1).map((line) => {
     const values = parseCsvLine(line);
     /** @type {Record<string, string>} */
@@ -91,10 +104,6 @@ function parseCsvToRecords(csvText) {
   });
 }
 
-function buildPubCsvUrlByGid(gid) {
-  return `${DEFAULT_PUB_BASE}?gid=${encodeURIComponent(gid)}&single=true&output=csv`;
-}
-
 function getHomeSettingsCsvUrl() {
   const c = getConfig();
   if (c.homeSettingsCsvUrl?.trim()) return c.homeSettingsCsvUrl.trim();
@@ -104,7 +113,7 @@ function getHomeSettingsCsvUrl() {
 function getHomeCategoriesCsvUrl() {
   const c = getConfig();
   if (c.homeCategoriesCsvUrl?.trim()) return c.homeCategoriesCsvUrl.trim();
-  return null;
+  return DEFAULT_HOME_CATEGORIES_CSV_URL;
 }
 
 /** @param {Record<string, string>} row */
@@ -178,6 +187,8 @@ export async function fetchHomePageCategories() {
 
 /** @param {Record<string, string>} raw */
 function mapRawProduct(raw) {
+  const slug =
+    raw.slug?.trim() || raw.code?.trim() || raw.id?.trim() || "";
   return {
     id: raw.id?.trim() || "",
     code: raw.code?.trim() || "",
@@ -186,7 +197,7 @@ function mapRawProduct(raw) {
     category: raw.category?.trim() || "Без категории",
     description: raw.description?.trim() || "",
     composition: raw.composition?.trim() || "",
-    slug: raw.slug?.trim() || "",
+    slug,
     imageUrl: toFinalImagePath(raw.image_url),
     imageHoverUrl: raw.image_hover_url
       ? toFinalImagePath(raw.image_hover_url)
@@ -201,7 +212,7 @@ export function parseProductsCsvText(text) {
     .map((line) => line.trim())
     .filter(Boolean);
   if (lines.length <= 1) return [];
-  const headers = parseCsvLine(lines[0]).map((h) => h.toLowerCase());
+  const headers = parseCsvLine(lines[0]).map((h) => normalizeCsvHeader(h));
   return lines.slice(1).map((line) => {
     const values = parseCsvLine(line);
     /** @type {Record<string, string>} */

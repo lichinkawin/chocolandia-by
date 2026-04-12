@@ -41,8 +41,11 @@ export function createProductCard(product, index) {
     getCartItems().find((i) => i.id === product.id)?.quantity ?? 0;
   const badge = badgeForIndex(index);
 
+  const slugForUrl = (product.slug || product.code || product.id || "").trim();
   const wrap = el("a", "group block", {
-    href: `product.html?slug=${encodeURIComponent(product.slug)}`,
+    href: slugForUrl
+      ? `product.html?slug=${encodeURIComponent(slugForUrl)}`
+      : "catalog.html",
   });
 
   const article = el(

@@ -4,14 +4,61 @@ import { fetchProducts } from "../sheets.js";
 import { formatBynPrice } from "../price.js";
 import { el } from "../dom.js";
 
-function getSlug() {
+/** @param {string} s */
+function safeDecodeURIComponent(s) {
+  let out = s.replace(/\+/g, " ");
+  try {
+    out = decodeURIComponent(out);
+  } catch {
+    /* keep */
+  }
+  return out;
+}
+
+/**
+ * ?slug=…, либо путь /product/имя (Apache .htaccess), либо /site/product/имя.
+ */
+function getSlugFromUrl() {
   const u = new URL(window.location.href);
-  return u.searchParams.get("slug")?.trim() || "";
+  const q = u.searchParams.get("slug");
+  if (q != null && String(q).trim() !== "") {
+    return safeDecodeURIComponent(String(q).trim());
+  }
+  const path = u.pathname.replace(/\/+$/, "") || "";
+  const marker = "/product/";
+  const idx = path.lastIndexOf(marker);
+  if (idx !== -1) {
+    const rest = path.slice(idx + marker.length);
+    const seg = rest.split("/").filter(Boolean)[0];
+    if (seg) return safeDecodeURIComponent(seg);
+  }
+  return "";
+}
+
+/**
+ * @param {{ slug?: string, code?: string, id?: string }[]} products
+ * @param {string} slug
+ */
+function findProductBySlug(products, slug) {
+  const needle = slug.trim();
+  if (!needle) return undefined;
+  let p = products.find((x) => (x.slug || "").trim() === needle);
+  if (p) return p;
+  const nLow = needle.toLowerCase();
+  p = products.find((x) => (x.slug || "").trim().toLowerCase() === nLow);
+  if (p) return p;
+  return products.find(
+    (x) =>
+      (x.code || "").trim() === needle ||
+      (x.id || "").trim() === needle ||
+      (x.code || "").trim().toLowerCase() === nLow ||
+      (x.id || "").trim().toLowerCase() === nLow,
+  );
 }
 
 async function main() {
   initLayout();
-  const slug = getSlug();
+  const slug = getSlugFromUrl();
   const mount = document.getElementById("product-root");
   if (!mount) return;
 
@@ -24,7 +71,7 @@ async function main() {
     return;
   }
 
-  const product = products.find((p) => p.slug === slug);
+  const product = findProductBySlug(products, slug);
   if (!product) {
     mount.innerHTML = `<div class="space-y-4 text-center py-16">
       <p class="text-foreground-muted">Товар не найден.</p>

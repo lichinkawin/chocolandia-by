@@ -3,9 +3,7 @@ const FALLBACK_IMAGE_NAME = "placeholder.jpg";
 /** @param {string | undefined} input */
 export function normalizeImageFileName(input) {
   if (!input) return FALLBACK_IMAGE_NAME;
-  const trimmed = input.trim().toLowerCase();
-  if (!trimmed) return FALLBACK_IMAGE_NAME;
-  const unified = trimmed.replaceAll("\\", "/");
+  const unified = String(input).trim().replaceAll("\\", "/");
   const nameOnly = (unified.split("/").pop() ?? unified).trim();
   if (!nameOnly) return FALLBACK_IMAGE_NAME;
   return nameOnly;
@@ -23,6 +21,6 @@ export function toPublicImagePath(input) {
 export function toFinalImagePath(value) {
   const normalized = toPublicImagePath(value);
   const parts = normalized.split("/");
-  const fileName = (parts.at(-1) ?? "placeholder.jpg").toLowerCase();
+  const fileName = parts.at(-1) ?? "placeholder.jpg";
   return `NEW/${fileName}`;
 }

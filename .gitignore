@@ -45,3 +45,7 @@ next-env.d.ts
 
 .next.zip
 .next/
+
+# Картинки товаров: заливаются только на хостинг (cPanel/FTP), в репозиторий не коммитим
+site/NEW/*
+!site/NEW/.gitkeep

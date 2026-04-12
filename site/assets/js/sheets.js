@@ -23,23 +23,43 @@ export const DEFAULT_HOME_SETTINGS = {
   categories_title: "Выберите коллекцию",
 };
 
+/** Подписи под названием коллекции (карточки главной, страница коллекции). */
+const COLLECTION_SUB_LABEL = {
+  Все: "all",
+  Пасха: "Pasxa",
+  Наборы: "Nabory",
+  Клубника: "Klubnika",
+};
+
+/**
+ * @param {string} filterKey
+ * @param {string | undefined} fromSheet
+ */
+function subLabelForFilterKey(filterKey, fromSheet) {
+  const k = filterKey.trim();
+  if (Object.prototype.hasOwnProperty.call(COLLECTION_SUB_LABEL, k)) {
+    return COLLECTION_SUB_LABEL[k];
+  }
+  return fromSheet?.trim() || "";
+}
+
 export const DEFAULT_HOME_CATEGORIES = [
   {
     category_name: "Пасха",
     initial_letters: "Па",
-    sub_label: "Сезон",
+    sub_label: "Pasxa",
     filter_key: "Пасха",
   },
   {
     category_name: "Наборы",
     initial_letters: "На",
-    sub_label: "Подарки",
+    sub_label: "Nabory",
     filter_key: "Наборы",
   },
   {
     category_name: "Клубника",
     initial_letters: "Кл",
-    sub_label: "Фишка",
+    sub_label: "Klubnika",
     filter_key: "Клубника",
   },
 ];
@@ -143,11 +163,14 @@ function mapCategoryRow(row) {
   const filterKey =
     row.filter_key?.trim() || row.category_filter?.trim() || name;
   const cardRaw = row.card_image_url?.trim();
+  const collectionSlug =
+    row.collection_slug?.trim() || row.slug?.trim() || "";
   return {
     category_name: name,
     initial_letters: row.initial_letters?.trim() || name.slice(0, 2),
-    sub_label: row.sub_label?.trim() || "",
+    sub_label: subLabelForFilterKey(filterKey, row.sub_label),
     filter_key: filterKey,
+    collection_slug: collectionSlug,
     card_image_url: cardRaw ? toFinalImagePath(cardRaw) : undefined,
   };
 }

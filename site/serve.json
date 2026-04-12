@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/collections/**",
+      "destination": "/catalog.html"
+    }
+  ]
+}

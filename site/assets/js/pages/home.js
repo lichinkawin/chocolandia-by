@@ -1,3 +1,4 @@
+import { collectionPathForFilterKey } from "../collections-path.js";
 import { initLayout } from "../layout.js";
 import {
   DEFAULT_HOME_CATEGORIES,
@@ -69,8 +70,7 @@ async function main() {
       window.location.hash.replace(/^#cat-/, ""),
     );
     const active = hash || "";
-    const hrefFor = (key) =>
-      `catalog.html?category=${encodeURIComponent(key)}`;
+    const hrefFor = (key) => collectionPathForFilterKey(key);
     renderShopByCategory(
       catRoot,
       homeCategories,

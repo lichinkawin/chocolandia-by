@@ -19,7 +19,10 @@ export function initLayout() {
   const hideMobileCartFab =
     p.endsWith("product.html") ||
     /\/product\/[^/]+\/?$/.test(p) ||
-    window.location.search.includes("slug=");
+    /\/collections\/[^/]+\/?$/.test(p) ||
+    window.location.search.includes("slug=") ||
+    (/\/catalog(\.html)?\/?$/i.test(p) &&
+      window.location.hash.includes("col="));
 
   navRoot.innerHTML = `
 <header class="fixed inset-x-0 top-0 z-50 border-b border-outline-variant/20 bg-background/88 shadow-[0_10px_40px_-18px_rgba(39,19,16,0.07)] backdrop-blur-xl">
@@ -32,9 +35,9 @@ export function initLayout() {
           <a href="catalog.html" id="nav-catalog-link" class="font-serif text-base tracking-tight text-primary-container transition hover:text-accent" aria-expanded="false" aria-haspopup="menu">Каталог</a>
           <div id="nav-catalog-dd" class="pointer-events-none absolute left-0 top-full z-50 min-w-[220px] -translate-y-1 pt-3 opacity-0 transition">
             <div class="rounded-xl border border-outline-variant/25 bg-card/95 p-2 shadow-[0_24px_60px_-20px_rgba(39,19,16,0.2)] backdrop-blur-lg">
-              <a href="catalog.html?category=${encodeURIComponent("Пасха")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Пасха</a>
-              <a href="catalog.html?category=${encodeURIComponent("Наборы")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Наборы</a>
-              <a href="catalog.html?category=${encodeURIComponent("Клубника")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Клубника</a>
+              <a href="catalog.html#col=${encodeURIComponent("Пасха")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Пасха</a>
+              <a href="catalog.html#col=${encodeURIComponent("Наборы")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Наборы</a>
+              <a href="catalog.html#col=${encodeURIComponent("Клубника")}" class="block rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition hover:bg-muted-low hover:text-foreground">Клубника</a>
             </div>
           </div>
         </div>
@@ -66,9 +69,9 @@ ${hideMobileCartFab ? "" : `<a href="cart.html" class="group fixed bottom-6 righ
     <nav class="flex flex-1 flex-col gap-1 overflow-y-auto">
       <div class="space-y-1 pb-4">
         <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground-muted">Каталог</p>
-        <a href="catalog.html?category=${encodeURIComponent("Пасха")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Пасха</a>
-        <a href="catalog.html?category=${encodeURIComponent("Наборы")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Наборы</a>
-        <a href="catalog.html?category=${encodeURIComponent("Клубника")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Клубника</a>
+        <a href="catalog.html#col=${encodeURIComponent("Пасха")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Пасха</a>
+        <a href="catalog.html#col=${encodeURIComponent("Наборы")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Наборы</a>
+        <a href="catalog.html#col=${encodeURIComponent("Клубника")}" class="nav-mobile-link block rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Клубника</a>
       </div>
       <a href="faq.html#reviews" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">Отзывы</a>
       <a href="index.html#about" class="nav-mobile-link rounded-lg px-3 py-2.5 font-serif text-foreground/90 transition hover:bg-muted-low">О нас</a>
